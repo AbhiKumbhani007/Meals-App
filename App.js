@@ -1,54 +1,85 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, Button } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import CategoryScreen from "./Screen/CategoryScreen";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MealsOverViewScreen from "./Screen/MealsOverViewScreen";
+import FavouriteScreen from "./Screen/FavouriteScreen";
+import { StyleSheet } from "react-native";
 import MealDetialsScreen from "./Screen/MealDetailScreen";
-
+import MealsOverViewScreen from "./Screen/MealsOverViewScreen";
+import { NavigationContainer } from "@react-navigation/native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import FavouriteContextProvider from "./store/context/favourites-context";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const Stack = createNativeStackNavigator();
+
+const Drawer = createDrawerNavigator();
+
+function DrawerNavigator() {
+  return (
+    <Drawer.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: "#24483f" },
+        headerTintColor: "white",
+        sceneContainerStyle: { backgroundColor: "#24483f" },
+        drawerContentStyle: {
+          backgroundColor: "#498A79",
+        },
+        drawerInactiveTintColor: "white",
+        drawerActiveBackgroundColor: "#C2ECC0",
+      }}
+    >
+      <Drawer.Screen
+        name="MealsCategory"
+        component={CategoryScreen}
+        options={{
+          title: "All Categories",
+          headerTitleAlign: "center",
+          drawerIcon: ({ color, size }) => {
+            <Ionicons name="list" color={color} size={size} />;
+          },
+        }}
+      />
+      <Drawer.Screen
+        name="Favourite"
+        component={FavouriteScreen}
+        options={{
+          headerTitleAlign: "center",
+          drawerIcon: ({ color, size }) => {
+            <Ionicons name="star" size={size} color={color} />;
+          },
+        }}
+      />
+    </Drawer.Navigator>
+  );
+}
 
 export default function App() {
   return (
     <>
       <StatusBar style="light" />
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: { backgroundColor: "#24483f" },
-            headerTintColor: "white",
-            contentStyle: { backgroundColor: "#24483f" },
-          }}
-        >
-          <Stack.Screen
-            name="MealsCategories"
-            component={CategoryScreen}
-            options={{
-              title: "Meal Categories",
+      <FavouriteContextProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: { backgroundColor: "#24483f" },
+              headerTintColor: "white",
+              contentStyle: { backgroundColor: "#24483f" },
             }}
-          />
-          <Stack.Screen
-            name="MealsOverView"
-            // options={({ route, navigation }) => {
-            //   const catId = route.params.categoryId;
-            //   return {
-            //     title: catId,
-            //   };
-            // }}
-
-            component={MealsOverViewScreen}
-          />
-          <Stack.Screen
-            name="MealDetail"
-            component={MealDetialsScreen}
-            // options={{
-            //   headerRight: () => {
-            //     return <Button title="Tap me!"  />;
-            //   },
-            // }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+          >
+            <Stack.Screen
+              name="DraweerScreen"
+              component={DrawerNavigator}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="MealsOverView"
+              component={MealsOverViewScreen}
+            />
+            <Stack.Screen name="MealDetail" component={MealDetialsScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </FavouriteContextProvider>
     </>
   );
 }

@@ -1,7 +1,6 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import MealItem from "../Components/MealItem";
 import { MEALS, CATEGORIES } from "../data/dummy-data";
-import { useEffect, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
+import MealList from "../Components/MealList/MealList";
 
 function MealsOverViewScreen({ route, navigation }) {
   const catId = route.params.categoryId;
@@ -14,40 +13,10 @@ function MealsOverViewScreen({ route, navigation }) {
     const categoryTitle = CATEGORIES.find(
       (category) => category.id === catId
     ).title;
-    navigation.setOptions({ title: categoryTitle });
+    navigation.setOptions({ title: categoryTitle, headerTitleAlign: "center" });
   }, [catId, navigation]);
 
-  function renderMealItem(itemData) {
-    const item = itemData.item;
-
-    const mealItemProps = {
-      id: item.id,
-      title: item.title,
-      duration: item.duration,
-      complexity: item.complexity,
-      affordability: item.affordability,
-      imageUrl: item.imageUrl,
-    };
-
-    return <MealItem {...mealItemProps} />;
-  }
-
-  return (
-    <View style={styles.container}>
-      <FlatList
-        data={displayedMeals}
-        keyExtractor={(item) => item.id}
-        renderItem={renderMealItem}
-      />
-    </View>
-  );
+  return <MealList items={displayedMeals} />;
 }
 
 export default MealsOverViewScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-});
